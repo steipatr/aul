@@ -6,7 +6,7 @@ These formats are suitable for sharing on social media, or embedding presentatio
 **Documentation:** under construction
 
 
-**Requirements:** [pyNetLogo](http://pynetlogo.readthedocs.io/en/latest/), [imageio] (http://imageio.github.io/)
+**Requirements:** [pyNetLogo](http://pynetlogo.readthedocs.io/en/latest/), [imageio](http://imageio.github.io/)
 
 **Installation:** Available with the pip package manager: `pip install aul`.
 Please be aware of [the installation instructions](https://pynetlogo.readthedocs.io/en/latest/install.html)
