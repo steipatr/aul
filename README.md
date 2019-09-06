@@ -1,15 +1,10 @@
-# aul
-Export NetLogo simulation runs to GIF or MP4 through Python. These formats are suitable for sharing on social media, or embedding in presentations.
-
-
-
 ## aul
 
 []: [![Documentation Status](https://readthedocs.org/projects/emaworkbench/badge/?version=latest)](http://pynetlogo.readthedocs.org/en/latest/?badge=master)
 []: [![PyPi](https://img.shields.io/pypi/v/pynetlogo.svg)](https://pypi.python.org/pypi/pynetlogo)
 []: [![PyPi](https://img.shields.io/pypi/dm/pynetlogo.svg)](https://pypi.python.org/pypi/pynetlogo)
 
-An tool to export [NetLogo](https://ccl.northwestern.edu/netlogo/) simulation runs to GIF or MP4.
+A tool to export [NetLogo](https://ccl.northwestern.edu/netlogo/) simulation runs to GIF or MP4. using Python.
 These formats are suitable for sharing on social media, or embedding presentations.
 
 **Documentation:** under construction
