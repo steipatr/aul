@@ -7,7 +7,7 @@ import imageio
 netlogo = pyNetLogo.NetLogoLink(gui=False)
 
 
-def export_png(model, tick, png='pynevex.png',setup='Setup',go='go'):
+def export_png(model, tick, params=None, png='pynevex.png',setup='Setup',go='go'):
     """Export a single tick from a NetLogo run as a PNG
     
     Parameters
@@ -17,6 +17,9 @@ def export_png(model, tick, png='pynevex.png',setup='Setup',go='go'):
         
     tick: int
         Model time step to export
+        
+    params: dict
+        Pairings of NetLogo global parameters (e.g. sliders) and desired values
         
     png: str
         Name of created PNG
@@ -35,13 +38,13 @@ def export_png(model, tick, png='pynevex.png',setup='Setup',go='go'):
     
     frame = [tick]
     
-    export_frames(model, frame, setup, go)
+    export_frames(model, frame, params, setup, go)
     
     rename_frame(frame, png)
     
     return
 
-def export_gif(model, ticks, gif=None, setup='Setup', go='go', fps=10, subrectangles=False):
+def export_gif(model, ticks, params=None, gif=None, setup='Setup', go='go', fps=10, subrectangles=False):
     """Export multiple ticks from a NetLogo run as a GIF
     
     Parameters
@@ -51,6 +54,9 @@ def export_gif(model, ticks, gif=None, setup='Setup', go='go', fps=10, subrectan
         
     ticks: int, range of ints, list of ints
         Model time steps to export
+        
+    params: dict
+        Pairings of NetLogo global parameters (e.g. sliders) and desired values
         
     gif: str
         Name of created GIF
@@ -75,7 +81,7 @@ def export_gif(model, ticks, gif=None, setup='Setup', go='go', fps=10, subrectan
         
     frame_list = build_frame_list(ticks)
     
-    export_frames(model, frame_list, setup, go)
+    export_frames(model, frame_list, params, setup, go)
     
     file_name = make_name(model, gif, ending='.gif')
     
@@ -85,7 +91,7 @@ def export_gif(model, ticks, gif=None, setup='Setup', go='go', fps=10, subrectan
     
     return
 
-def export_mp4(model, ticks, mp4=None, setup='Setup', go='go', fps=10, quality=5):
+def export_mp4(model, ticks, params=None, mp4=None, setup='Setup', go='go', fps=10, quality=5):
     """Export multiple ticks from a NetLogo run as an MP4
     
     Parameters
@@ -95,6 +101,9 @@ def export_mp4(model, ticks, mp4=None, setup='Setup', go='go', fps=10, quality=5
         
     ticks: int, range of ints, list of ints
         Model time steps to export
+        
+    params: dict
+        Pairings of NetLogo global parameters (e.g. sliders) and desired values
         
     mp4: str
         Name of created MP4
@@ -119,7 +128,7 @@ def export_mp4(model, ticks, mp4=None, setup='Setup', go='go', fps=10, quality=5
     
     frame_list = build_frame_list(ticks)
     
-    export_frames(model,frame_list, setup, go)
+    export_frames(model,frame_list, params, setup, go)
     
     file_name = make_name(model, mp4, ending='.mp4')
     
@@ -146,12 +155,24 @@ def build_frame_list(ticks):
     
     return save_frames
 
-def export_frames(model,save_frames,setup,go):
+def export_frames(model,save_frames,params,setup,go):
     """load NetLogo model, initialize, run up to each desired tick, export current world view as PNG, continue to next tick, etc. 
     PNGs saved in directory of model.
     """
     
     netlogo.load_model(str(model))
+    
+    #overwrite model parameter settings if supplied
+    if params != None:
+        #modified from pyNetLogo docs, credit Jan Kwakkel and Marc Jaxa-Rozen
+        for k,v in params.items():
+            if k == "random-seed":
+                #The NetLogo random seed requires a different syntax
+                netlogo.command('random-seed {}'.format(v))
+            else:
+                #Otherwise, assume the input parameters are global variables
+                netlogo.command('set {0} {1}'.format(k,v))            
+              
     netlogo.command(setup)
     
     if len(save_frames) == 1:
