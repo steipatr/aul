@@ -1,6 +1,11 @@
-- add option to fade gifs in and out so beginning/end are clear
-- check for connectors (NL4PY and/or PyNetLogo)
 - documentation
-- gridded runs for visual comparison of different runs
+- settle on tick/frame terminology
 - different locations of executing python file, model (create special folder to hold temp images?)
+
+all require pillow/imageio:
+- add option to fade gifs in and out so beginning/end are clear
+- gridded runs for visual comparison of different runs
 - add option to resize
+
+shelved:
+- check for connectors (NL4PY and/or PyNetLogo)
