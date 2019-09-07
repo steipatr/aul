@@ -8,6 +8,31 @@ netlogo = pyNetLogo.NetLogoLink(gui=False)
 
 
 def export_png(model, tick, png='pynevex.png',setup='Setup',go='go'):
+    """Export a single tick from a NetLogo run as a PNG
+    
+    Parameters
+    ----------
+    model: str
+        Path, name of NetLogo model file
+        
+    tick: int
+        Model time step to export
+        
+    png: str
+        Name of created PNG
+        
+    setup: str
+        Name of model's initialization procedure
+        
+    go: str
+        Name of model's iteration procedure
+    
+    Returns
+    -------
+    None (PNG file created in model directory)
+    
+    """
+    
     frame = [tick]
     
     export_frames(model, frame, setup, go)
@@ -17,6 +42,37 @@ def export_png(model, tick, png='pynevex.png',setup='Setup',go='go'):
     return
 
 def export_gif(model, ticks, gif=None, setup='Setup', go='go', fps=10, subrectangles=False):
+    """Export multiple ticks from a NetLogo run as a GIF
+    
+    Parameters
+    ----------
+    model: str
+        Path, name of NetLogo model file
+        
+    ticks: int, range of ints, list of ints
+        Model time steps to export
+        
+    gif: str
+        Name of created GIF
+        
+    setup: str
+        Name of model's initialization procedure
+        
+    go: str
+        Name of model's iteration procedure
+        
+    fps: int
+        GIF speed in frames per second
+        
+    subrectangles: Boolean
+        Use subrectangles to compress GIF
+    
+    Returns
+    -------
+    None (GIF file created in model directory)
+    
+    """
+        
     frame_list = build_frame_list(ticks)
     
     export_frames(model, frame_list, setup, go)
@@ -30,6 +86,37 @@ def export_gif(model, ticks, gif=None, setup='Setup', go='go', fps=10, subrectan
     return
 
 def export_mp4(model, ticks, mp4=None, setup='Setup', go='go', fps=10, quality=5):
+    """Export multiple ticks from a NetLogo run as an MP4
+    
+    Parameters
+    ----------
+    model: str
+        Path, name of NetLogo model file
+        
+    ticks: int, range of ints, list of ints
+        Model time steps to export
+        
+    mp4: str
+        Name of created MP4
+        
+    setup: str
+        Name of model's initialization procedure
+        
+    go: str
+        Name of model's iteration procedure
+        
+    fps: int
+        MP4 speed in frames per second
+        
+    quality: int, [1-10]
+        color accuracy and sharpness of MP4, 10 is best quality
+    
+    Returns
+    -------
+    None (MP4 file created in model directory)
+    
+    """
+    
     frame_list = build_frame_list(ticks)
     
     export_frames(model,frame_list, setup, go)
@@ -43,18 +130,27 @@ def export_mp4(model, ticks, mp4=None, setup='Setup', go='go', fps=10, quality=5
     return
 
 def build_frame_list(ticks):
+    """convert desired ticks supplied as range into list"""
+    
+    #range of ticks. [0,5] -> 0,1,2,3,4
     if len(ticks) == 2:
         save_frames = list(range(ticks[0],ticks[1],1))
 
+    #range of ticks with spacing. [0,50,10] -> 0,10,20,30,40
     elif len(ticks) == 3:
         save_frames = list(range(ticks[0],ticks[1],ticks[2]))
 
+    #explicit list of ticks
     else:
         save_frames = ticks
     
     return save_frames
 
 def export_frames(model,save_frames,setup,go):
+    """load NetLogo model, initialize, run up to each desired tick, export current world view as PNG, continue to next tick, etc. 
+    PNGs saved in directory of model.
+    """
+    
     netlogo.load_model(str(model))
     netlogo.command(setup)
     
@@ -69,7 +165,7 @@ def export_frames(model,save_frames,setup,go):
             if save_frames.index(frame) == 0: 
                 interval = frame
             else:
-                previous_frame = save_frames[save_frames.index(frame)-1] #TODO indexing seems ugly
+                previous_frame = save_frames[save_frames.index(frame)-1]
                 interval = frame - previous_frame
             
             netlogo.command('repeat ' + str(frame) +  '[' + go + ']')
@@ -79,6 +175,8 @@ def export_frames(model,save_frames,setup,go):
     return
 
 def make_name(model, passed_name=None,ending=None):
+    """Determine name of file to be created."""
+    
     if passed_name == None:
         file_name = model.split('.')[0] + ending
         
@@ -91,6 +189,8 @@ def make_name(model, passed_name=None,ending=None):
     return file_name
 
 def build_gif(save_frames,gif,fps,subrectangles):
+    """Join exported PNG world views into GIF using desired settings."""
+    
     images = []
     for frame in save_frames:
         images.append(imageio.imread(str(frame) + '.png'))
@@ -98,6 +198,8 @@ def build_gif(save_frames,gif,fps,subrectangles):
     return
 
 def build_mp4(save_frames,mp4,fps,quality):
+    """Join exported PNG world views into MP4 using desired settings."""
+    
     images = []
     for frame in save_frames:
         images.append(imageio.imread(str(frame) + '.png'))
@@ -105,6 +207,8 @@ def build_mp4(save_frames,mp4,fps,quality):
     return
 
 def delete_frames(save_frames):
+    """Remove exported PNG world views to avoid clutter."""
+    
     cwd = os.getcwd()
     for frame in save_frames:
         frame_name = str(frame) + '.png'
@@ -114,5 +218,7 @@ def delete_frames(save_frames):
     return
 
 def rename_frame(frame, png):
+    """Ensure consistent naming of exported PNG world views."""
+    
     os.rename(str(frame[0]) + '.png', png)
     return
