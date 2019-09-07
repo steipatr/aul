@@ -1,7 +1,7 @@
 ## aul
 
 A tool to export [NetLogo](https://ccl.northwestern.edu/netlogo/) simulation runs to GIF or MP4. using Python.
-These formats are suitable for sharing on social media, or embedding presentations.
+These formats are suitable for sharing on social media, or embedding in presentations.
 
 **Documentation:** under construction
 
