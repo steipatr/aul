@@ -4,7 +4,7 @@ import sys
 import pyNetLogo
 import imageio
 
-from PIL import Image
+from PIL import Image, ImageEnhance
 
 netlogo = pyNetLogo.NetLogoLink(gui=False)
 
@@ -24,7 +24,10 @@ def export_png(model, tick, params=None, scale=1.0, png='pynevex.png',setup='Set
         Pairings of NetLogo global parameters (e.g. sliders) and desired values
         
     scale: float
-        Scale factor by which output file should be larger (or smaller) than NetLogo model world
+        Scale factor by which output file should be larger (or smaller) than NetLogo model world:
+            >1.0 larger
+            1.0 same size
+            <1.0 smaller
         
     png: str
         Name of created PNG
@@ -49,7 +52,7 @@ def export_png(model, tick, params=None, scale=1.0, png='pynevex.png',setup='Set
     
     return
 
-def export_gif(model, ticks, params=None, scale=1.0, gif=None, setup='Setup', go='go', fps=10, subrectangles=False):
+def export_gif(model, ticks, params=None, scale=1.0, fade=0.0, gif=None, setup='Setup', go='go', fps=10, subrectangles=False):
     """Export multiple ticks from a NetLogo run as a GIF
     
     Parameters
@@ -64,7 +67,15 @@ def export_gif(model, ticks, params=None, scale=1.0, gif=None, setup='Setup', go
         Pairings of NetLogo global parameters (e.g. sliders) and desired values
                 
     scale: float
-        Scale factor by which output file should be larger (or smaller) than NetLogo model world
+        Scale factor by which output file should be larger (or smaller) than NetLogo model world:
+            >1.0 larger
+            1.0 same size
+            <1.0 smaller
+                        
+    fade: float
+        Fade out end of model run to show terminating. Parameter sets duration of fade: 
+            0 no fade
+            1 start fading immediately
         
     gif: str
         Name of created GIF
@@ -95,6 +106,9 @@ def export_gif(model, ticks, params=None, scale=1.0, gif=None, setup='Setup', go
     
     if scale != 1.0:
         resize_frames(frames, scale)
+        
+    if fade != 0.0:
+        fade_end(frames,fade)
     
     build_gif(frames, file_name, fps, subrectangles)
     
@@ -102,7 +116,7 @@ def export_gif(model, ticks, params=None, scale=1.0, gif=None, setup='Setup', go
     
     return
 
-def export_mp4(model, ticks, params=None, scale=1.0, mp4=None, setup='Setup', go='go', fps=10, quality=5):
+def export_mp4(model, ticks, params=None, scale=1.0, scale=1.0, mp4=None, setup='Setup', go='go', fps=10, quality=5):
     """Export multiple ticks from a NetLogo run as an MP4
     
     Parameters
@@ -117,7 +131,15 @@ def export_mp4(model, ticks, params=None, scale=1.0, mp4=None, setup='Setup', go
         Pairings of NetLogo global parameters (e.g. sliders) and desired values
                 
     scale: float
-        Scale factor by which output file should be larger (or smaller) than NetLogo model world
+        Scale factor by which output file should be larger (or smaller) than NetLogo model world:
+            >1.0 larger
+            1.0 same size
+            <1.0 smaller
+                        
+    fade: float
+        Fade out end of model run to show terminating. Parameter sets duration of fade: 
+            0 no fade
+            1 start fading immediately
         
     mp4: str
         Name of created MP4
@@ -146,6 +168,9 @@ def export_mp4(model, ticks, params=None, scale=1.0, mp4=None, setup='Setup', go
     
     file_name = make_name(model, mp4, ending='.mp4')
     
+    if scale != 1.0:
+        resize_frames(frames, scale)
+    
     build_mp4(frames, file_name, fps, quality)
     
     delete_frames(frames)
@@ -153,7 +178,7 @@ def export_mp4(model, ticks, params=None, scale=1.0, mp4=None, setup='Setup', go
     return
 
 def find_frames(ticks):
-    """convert desired ticks supplied as range into list"""
+    """build list of desired export ticks"""
     
     #range of ticks. [0,5] -> 0,1,2,3,4
     if len(ticks) == 2:
@@ -260,9 +285,27 @@ def rename_frame(frame, png):
 
 def resize_frames(frames,scale):
     """Resize all frames."""
+    
     for frame in frames:
         infile = Image.open(str(frame) + ".png")
         outsize = (int(infile.size[0]*scale), int(infile.size[1]*scale)) 
         outfile = infile.resize(outsize)
         outfile.save(str(frame) + ".png",format="PNG")  
+    return
+
+def fade_end(frames,fade):
+    """Fade last few frames of a model run to black."""
+    
+    #determine which frames to fade
+    first_fade = int(len(frames) * (1 - fade))
+    fade_frames = frames[first_fade:]
+    
+    fade_val = 1  
+    for frame in fade_frames:
+        infile = Image.open(str(frame) + ".png")
+        outfile = ImageEnhance.Brightness(infile).enhance(fade_val)
+        outfile.save(str(frame) + ".png",format="PNG")
+        
+        print(fade_val)
+        fade_val = fade_val - (1 / len(fade_frames))
     return
