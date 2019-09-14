@@ -116,7 +116,7 @@ def export_gif(model, ticks, params=None, scale=1.0, fade=0.0, gif=None, setup='
     
     return
 
-def export_mp4(model, ticks, params=None, scale=1.0, scale=1.0, mp4=None, setup='Setup', go='go', fps=10, quality=5):
+def export_mp4(model, ticks, params=None, scale=1.0, fade=0.0, mp4=None, setup='Setup', go='go', fps=10, quality=10):
     """Export multiple ticks from a NetLogo run as an MP4
     
     Parameters
@@ -170,6 +170,9 @@ def export_mp4(model, ticks, params=None, scale=1.0, scale=1.0, mp4=None, setup=
     
     if scale != 1.0:
         resize_frames(frames, scale)
+    
+    if fade != 0.0:
+        fade_end(frames,fade)
     
     build_mp4(frames, file_name, fps, quality)
     
@@ -263,7 +266,7 @@ def build_mp4(frames,mp4,fps,quality):
     images = []
     for frame in frames:
         images.append(imageio.imread(str(frame) + '.png'))
-    imageio.mimsave(mp4, images, fps=fps, quality=quality)      
+    imageio.mimsave(mp4, images, fps=fps, quality=quality, pixelformat='yuvj444p') 
     return
 
 def delete_frames(frames):
@@ -305,7 +308,6 @@ def fade_end(frames,fade):
         infile = Image.open(str(frame) + ".png")
         outfile = ImageEnhance.Brightness(infile).enhance(fade_val)
         outfile.save(str(frame) + ".png",format="PNG")
-        
-        print(fade_val)
+
         fade_val = fade_val - (1 / len(fade_frames))
     return
