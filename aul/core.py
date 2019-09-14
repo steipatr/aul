@@ -305,9 +305,9 @@ def fade_end(frames,fade):
     
     fade_val = 1  
     for frame in fade_frames:
+        fade_val = fade_val - (1 / len(fade_frames))
+        
         infile = Image.open(str(frame) + ".png")
         outfile = ImageEnhance.Brightness(infile).enhance(fade_val)
         outfile.save(str(frame) + ".png",format="PNG")
-
-        fade_val = fade_val - (1 / len(fade_frames))
     return
