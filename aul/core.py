@@ -4,10 +4,12 @@ import sys
 import pyNetLogo
 import imageio
 
+from PIL import Image
+
 netlogo = pyNetLogo.NetLogoLink(gui=False)
 
 
-def export_png(model, tick, params=None, png='pynevex.png',setup='Setup',go='go'):
+def export_png(model, tick, params=None, scale=1.0, png='pynevex.png',setup='Setup',go='go'):
     """Export a single tick from a NetLogo run as a PNG
     
     Parameters
@@ -20,6 +22,9 @@ def export_png(model, tick, params=None, png='pynevex.png',setup='Setup',go='go'
         
     params: dict
         Pairings of NetLogo global parameters (e.g. sliders) and desired values
+        
+    scale: float
+        Scale factor by which output file should be larger (or smaller) than NetLogo model world
         
     png: str
         Name of created PNG
@@ -44,7 +49,7 @@ def export_png(model, tick, params=None, png='pynevex.png',setup='Setup',go='go'
     
     return
 
-def export_gif(model, ticks, params=None, gif=None, setup='Setup', go='go', fps=10, subrectangles=False):
+def export_gif(model, ticks, params=None, scale=1.0, gif=None, setup='Setup', go='go', fps=10, subrectangles=False):
     """Export multiple ticks from a NetLogo run as a GIF
     
     Parameters
@@ -57,6 +62,9 @@ def export_gif(model, ticks, params=None, gif=None, setup='Setup', go='go', fps=
         
     params: dict
         Pairings of NetLogo global parameters (e.g. sliders) and desired values
+                
+    scale: float
+        Scale factor by which output file should be larger (or smaller) than NetLogo model world
         
     gif: str
         Name of created GIF
@@ -79,19 +87,22 @@ def export_gif(model, ticks, params=None, gif=None, setup='Setup', go='go', fps=
     
     """
         
-    frame_list = build_frame_list(ticks)
+    frames = find_frames(ticks)
     
-    export_frames(model, frame_list, params, setup, go)
+    export_frames(model, frames, params, setup, go)
     
     file_name = make_name(model, gif, ending='.gif')
     
-    build_gif(frame_list, file_name, fps, subrectangles)
+    if scale != 1.0:
+        resize_frames(frames, scale)
     
-    delete_frames(frame_list)
+    build_gif(frames, file_name, fps, subrectangles)
+    
+    delete_frames(frames)
     
     return
 
-def export_mp4(model, ticks, params=None, mp4=None, setup='Setup', go='go', fps=10, quality=5):
+def export_mp4(model, ticks, params=None, scale=1.0, mp4=None, setup='Setup', go='go', fps=10, quality=5):
     """Export multiple ticks from a NetLogo run as an MP4
     
     Parameters
@@ -104,6 +115,9 @@ def export_mp4(model, ticks, params=None, mp4=None, setup='Setup', go='go', fps=
         
     params: dict
         Pairings of NetLogo global parameters (e.g. sliders) and desired values
+                
+    scale: float
+        Scale factor by which output file should be larger (or smaller) than NetLogo model world
         
     mp4: str
         Name of created MP4
@@ -126,36 +140,36 @@ def export_mp4(model, ticks, params=None, mp4=None, setup='Setup', go='go', fps=
     
     """
     
-    frame_list = build_frame_list(ticks)
+    frames = find_frames(ticks)
     
-    export_frames(model,frame_list, params, setup, go)
+    export_frames(model, frames, params, setup, go)
     
     file_name = make_name(model, mp4, ending='.mp4')
     
-    build_mp4(frame_list, file_name, fps, quality)
+    build_mp4(frames, file_name, fps, quality)
     
-    delete_frames(frame_list)
+    delete_frames(frames)
     
     return
 
-def build_frame_list(ticks):
+def find_frames(ticks):
     """convert desired ticks supplied as range into list"""
     
     #range of ticks. [0,5] -> 0,1,2,3,4
     if len(ticks) == 2:
-        save_frames = list(range(ticks[0],ticks[1],1))
+        frames = list(range(ticks[0],ticks[1],1))
 
     #range of ticks with spacing. [0,50,10] -> 0,10,20,30,40
     elif len(ticks) == 3:
-        save_frames = list(range(ticks[0],ticks[1],ticks[2]))
+        frames = list(range(ticks[0],ticks[1],ticks[2]))
 
     #explicit list of ticks
     else:
-        save_frames = ticks
+        frames = ticks
     
-    return save_frames
+    return frames
 
-def export_frames(model,save_frames,params,setup,go):
+def export_frames(model,frames,params,setup,go):
     """load NetLogo model, initialize, run up to each desired tick, export current world view as PNG, continue to next tick, etc. 
     PNGs saved in directory of model.
     """
@@ -175,18 +189,18 @@ def export_frames(model,save_frames,params,setup,go):
               
     netlogo.command(setup)
     
-    if len(save_frames) == 1:
-        frame = save_frames[0]
+    if len(frames) == 1:
+        frame = frames[0]
         netlogo.command('repeat ' + str(frame) +  '[' + go + ']')
         netlogo.command('export-view \"' + str(frame) + '.png\" ')
                 
     else:
-        for frame in save_frames:        
+        for frame in frames:        
             #run for number of ticks between two frames of interest
-            if save_frames.index(frame) == 0: 
+            if frames.index(frame) == 0: 
                 interval = frame
             else:
-                previous_frame = save_frames[save_frames.index(frame)-1]
+                previous_frame = frames[frames.index(frame)-1]
                 interval = frame - previous_frame
             
             netlogo.command('repeat ' + str(frame) +  '[' + go + ']')
@@ -209,29 +223,29 @@ def make_name(model, passed_name=None,ending=None):
     
     return file_name
 
-def build_gif(save_frames,gif,fps,subrectangles):
+def build_gif(frames,gif,fps,subrectangles):
     """Join exported PNG world views into GIF using desired settings."""
     
     images = []
-    for frame in save_frames:
+    for frame in frames:
         images.append(imageio.imread(str(frame) + '.png'))
     imageio.mimsave(gif, images, fps=fps, subrectangles=subrectangles)      
     return
 
-def build_mp4(save_frames,mp4,fps,quality):
+def build_mp4(frames,mp4,fps,quality):
     """Join exported PNG world views into MP4 using desired settings."""
     
     images = []
-    for frame in save_frames:
+    for frame in frames:
         images.append(imageio.imread(str(frame) + '.png'))
     imageio.mimsave(mp4, images, fps=fps, quality=quality)      
     return
 
-def delete_frames(save_frames):
+def delete_frames(frames):
     """Remove exported PNG world views to avoid clutter."""
     
     cwd = os.getcwd()
-    for frame in save_frames:
+    for frame in frames:
         frame_name = str(frame) + '.png'
         frame_path = os.path.join(cwd, frame_name)
         if os.path.isfile(frame_path):
@@ -242,4 +256,13 @@ def rename_frame(frame, png):
     """Ensure consistent naming of exported PNG world views."""
     
     os.rename(str(frame[0]) + '.png', png)
+    return
+
+def resize_frames(frames,scale):
+    """Resize all frames."""
+    for frame in frames:
+        infile = Image.open(str(frame) + ".png")
+        outsize = (int(infile.size[0]*scale), int(infile.size[1]*scale)) 
+        outfile = infile.resize(outsize)
+        outfile.save(str(frame) + ".png",format="PNG")  
     return
