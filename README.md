@@ -117,7 +117,6 @@ aul.export_gif('Fire Simple Extension 1.nlogo', 45, name = "custom-fire")
 
 ```
 
-### Minor Stuff
 Per NetLogo conventions, the initialization and iteration procedures are expected to be named *setup* and *go*. Override these
 defaults with the `setup` and `go` parameters. Adjust the playback speed of the output file with `fps` (frames per second).
 

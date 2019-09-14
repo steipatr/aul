@@ -52,7 +52,7 @@ def export_png(model, tick, params=None, scale=1.0, png='pynevex.png',setup='Set
     
     return
 
-def export_gif(model, ticks, params=None, scale=1.0, fade=0.0, gif=None, setup='Setup', go='go', fps=10, subrectangles=False):
+def export_gif(model, ticks, params=None, scale=1.0, fade=0.0, name=None, setup='Setup', go='go', fps=10, subrectangles=False):
     """Export multiple ticks from a NetLogo run as a GIF
     
     Parameters
@@ -102,7 +102,7 @@ def export_gif(model, ticks, params=None, scale=1.0, fade=0.0, gif=None, setup='
     
     export_frames(model, frames, params, setup, go)
     
-    file_name = make_name(model, gif, ending='.gif')
+    file_name = make_name(model, name, ending='.gif')
     
     if scale != 1.0:
         resize_frames(frames, scale)
@@ -116,7 +116,7 @@ def export_gif(model, ticks, params=None, scale=1.0, fade=0.0, gif=None, setup='
     
     return
 
-def export_mp4(model, ticks, params=None, scale=1.0, fade=0.0, mp4=None, setup='Setup', go='go', fps=10, quality=10):
+def export_mp4(model, ticks, params=None, scale=1.0, fade=0.0, name=None, setup='Setup', go='go', fps=10, quality=10):
     """Export multiple ticks from a NetLogo run as an MP4
     
     Parameters
@@ -166,7 +166,7 @@ def export_mp4(model, ticks, params=None, scale=1.0, fade=0.0, mp4=None, setup='
     
     export_frames(model, frames, params, setup, go)
     
-    file_name = make_name(model, mp4, ending='.mp4')
+    file_name = make_name(model, name, ending='.mp4')
     
     if scale != 1.0:
         resize_frames(frames, scale)
