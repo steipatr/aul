@@ -137,3 +137,7 @@ You can reduce GIF file size by settings `subrectangles = True`.
 ### MP4-specific Arguments
 
 You can reduce MP4 file size with the `quality` argument. Default is max quality (and thus max file size).
+
+## Contact
+Please get in touch if you have questions or suggestions, either through an issue or on: 
+* Twitter - [@steipatr](https://twitter.com/steipatr)

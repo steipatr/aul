@@ -236,7 +236,7 @@ def export_frames(model,frames,params,setup,go):
                 previous_frame = frames[frames.index(frame)-1]
                 interval = frame - previous_frame
             
-            netlogo.command('repeat ' + str(frame) +  '[' + go + ']')
+            netlogo.command('repeat ' + str(interval) +  '[' + go + ']')
 
             netlogo.command('export-view \"' + str(frame) + '.png\" ')
         

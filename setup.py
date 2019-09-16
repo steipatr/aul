@@ -5,10 +5,10 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="aul",
-    version="0.1",
+    version="0.1.1",
     author="Patrick Steinmann",
     author_email="patrick.steinmann@wur.nl",
-    description="A package to export NetLogo simulation runs in GIF or MP4 formats",
+    description="A package to export NetLogo model runs in GIF or MP4 formats",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/steipatr/aul",
