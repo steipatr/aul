@@ -2,6 +2,7 @@
 - settle on tick/frame terminology
 - different locations of executing python file, model (create special folder to hold temp images?)
 - gridded runs for visual comparison of different runs
+- add code examples
 
 shelved:
 - check for connectors (NL4PY and/or PyNetLogo)
