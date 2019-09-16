@@ -183,17 +183,22 @@ def export_mp4(model, ticks, params=None, scale=1.0, fade=0.0, name=None, setup=
 def find_frames(ticks):
     """build list of desired export ticks"""
     
-    #range of ticks. [0,5] -> 0,1,2,3,4
-    if len(ticks) == 2:
-        frames = list(range(ticks[0],ticks[1],1))
+    if type(ticks) == int:
+        frames = list(range(0,ticks,1))
+    
+    elif type(ticks) == list:
+        
+        #range of ticks. [0,5] -> 0,1,2,3,4
+        if len(ticks) == 2:
+            frames = list(range(ticks[0],ticks[1],1))
 
-    #range of ticks with spacing. [0,50,10] -> 0,10,20,30,40
-    elif len(ticks) == 3:
-        frames = list(range(ticks[0],ticks[1],ticks[2]))
+        #range of ticks with spacing. [0,50,10] -> 0,10,20,30,40
+        elif len(ticks) == 3:
+            frames = list(range(ticks[0],ticks[1],ticks[2]))
 
-    #explicit list of ticks
-    else:
-        frames = ticks
+        #explicit list of ticks
+        else:
+            frames = ticks
     
     return frames
 

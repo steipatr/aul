@@ -50,7 +50,7 @@ aul.export_mp4('Fire.nlogo', 30)
 
 ### Ticks
 
-You can specify ticks in three ways - as an integer (see above), or a two- or three-element list of Python `range()` parameters:
+You can specify ticks in four ways - as an integer (see above), as a two- or three-element list of Python `range()` parameters, or as an explicit list of ticks:
 
 ```py
 import aul
@@ -67,6 +67,16 @@ import aul
 
 #every tenth tick from 0 to 190
 aul.export_mp4('Fire.nlogo', [0,200,10])
+
+```
+
+for specific ticks:
+
+```py
+import aul
+
+#specific ticks only
+aul.export_mp4('Fire.nlogo', [0,1,2,3,4,5,7,8,9,12,22])
 
 ```
 
