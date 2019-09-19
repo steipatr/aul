@@ -52,7 +52,7 @@ def export_png(model, tick, params=None, scale=1.0, png='pynevex.png',setup='Set
     
     return
 
-def export_gif(model, ticks, params=None, scale=1.0, fade=0.0, name=None, setup='Setup', go='go', fps=10, subrectangles=False):
+def export_gif(model, ticks, params=None, scale=1.0, fade=0.0, name=None, setup='Setup', go='go', duration=None, fps=10, subrectangles=False):
     """Export multiple ticks from a NetLogo run as a GIF
     
     Parameters
@@ -86,7 +86,10 @@ def export_gif(model, ticks, params=None, scale=1.0, fade=0.0, name=None, setup=
     go: str
         Name of model's iteration procedure
         
-    fps: int
+    duration: float, list of floats
+        Duration of frames. Either specify one value that is used for all frames, or one value for each frame
+        
+    fps: float
         GIF speed in frames per second
         
     subrectangles: Boolean
@@ -109,9 +112,9 @@ def export_gif(model, ticks, params=None, scale=1.0, fade=0.0, name=None, setup=
         
     if fade != 0.0:
         fade_end(frames,fade)
-    
-    build_gif(frames, file_name, fps, subrectangles)
-    
+
+    build_gif(frames, file_name, duration, fps, subrectangles)
+ 
     delete_frames(frames)
     
     return
@@ -150,7 +153,7 @@ def export_mp4(model, ticks, params=None, scale=1.0, fade=0.0, name=None, setup=
     go: str
         Name of model's iteration procedure
         
-    fps: int
+    fps: float
         MP4 speed in frames per second
         
     quality: int, [1-10]
@@ -256,13 +259,18 @@ def make_name(model, passed_name=None,ending=None):
     
     return file_name
 
-def build_gif(frames,gif,fps,subrectangles):
+def build_gif(frames,gif,duration,fps,subrectangles):
     """Join exported PNG world views into GIF using desired settings."""
     
     images = []
     for frame in frames:
         images.append(imageio.imread(str(frame) + '.png'))
-    imageio.mimsave(gif, images, fps=fps, subrectangles=subrectangles)      
+    
+    #only duration or fps should be used, as they express the same concept in different ways
+    if duration != None:
+        imageio.mimsave(gif, images, duration=duration, subrectangles=subrectangles)   
+    else:
+        imageio.mimsave(gif, images, fps=fps, subrectangles=subrectangles)
     return
 
 def build_mp4(frames,mp4,fps,quality):
