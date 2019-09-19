@@ -66,7 +66,7 @@ if you don't want every tick:
 import aul
 
 #every tenth tick from 0 to 190
-aul.export_mp4('Fire.nlogo', [0,200,10])
+aul.export_gif('Fire.nlogo', [0,200,10])
 
 ```
 
@@ -76,7 +76,7 @@ for specific ticks:
 import aul
 
 #specific ticks only
-aul.export_mp4('Fire.nlogo', [0,1,2,3,4,5,7,8,9,12,22])
+aul.export_gif('Fire.nlogo', [0,1,2,3,4,5,7,8,9,12,22])
 
 ```
 
@@ -102,7 +102,7 @@ By default, the generated file will have the same pixel dimensions as the NetLog
 import aul
 
 #GIF file will be twice as large as NetLogo world
-aul.export_gif('Fire Simple Extension 1.nlogo', 45, scale = 2.0)
+aul.export_gif('Fire.nlogo', 45, scale = 2.0)
 
 ```
 
@@ -112,7 +112,7 @@ You can also fade the last few frames of the run to black (to emphasize it is te
 import aul
 
 #GIF will fade to black over last 30% of runtime
-aul.export_gif('Fire Simple Extension 1.nlogo', 45, fade = 0.3)
+aul.export_gif('Fire.nlogo', 45, fade = 0.3)
 
 ```
 
@@ -123,20 +123,65 @@ This is useful if you to export multiple runs (e.g. with different random seeds)
 import aul
 
 #GIF will be saved as "custom-fire.gif"
-aul.export_gif('Fire Simple Extension 1.nlogo', 45, name = "custom-fire")
+aul.export_gif('Fire.nlogo', 45, name = "custom-fire")
 
 ```
 
 Per NetLogo conventions, the initialization and iteration procedures are expected to be named *setup* and *go*. Override these
-defaults with the `setup` and `go` parameters. Adjust the playback speed of the output file with `fps` (frames per second).
+defaults with the `setup` and `go` parameters. 
+
+```py
+import aul
+
+#Some custom model with unconventional procedure names
+aul.export_gif('Custom.nlogo', 45, setup='init', go='run')
+
+```
+
+Adjust the playback speed of the output file with `fps` (frames per second).
+
+```py
+import aul
+
+#Save for playback at 8 frames per second
+aul.export_gif('Fire.nlogo', 45, fps = 8)
+
+```
 
 ### GIF-specific Arguments
 
 You can reduce GIF file size by settings `subrectangles = True`.
 
+```py
+import aul
+
+#compress file
+aul.export_gif('Fire.nlogo', 45, subrectangles = True)
+
+```
+
+You can override the `fps` parameter and specify frame durations instead with `duration`. This can be either as a global value
+(time per frame), or as a specific value for each individual frame.
+
+```py
+import aul
+
+#show first 15 frames in Fibonacci time
+aul.export_gif('Fibonacci.nlogo', 15, duration = [1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610])
+
+```
+
 ### MP4-specific Arguments
 
 You can reduce MP4 file size with the `quality` argument. Default is max quality (and thus max file size).
+
+```py
+import aul
+
+#compress file
+aul.export_mp4('Fire.nlogo', 45, quality = 3)
+
+```
 
 ## Contact
 Please get in touch if you have questions or suggestions, either through an issue or on: 
