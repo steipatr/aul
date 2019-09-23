@@ -1,2 +1,0 @@
-- different locations of executing python file, model
-- gridding for visual comparison
