@@ -173,7 +173,7 @@ aul.export_gif('Fibonacci.nlogo', 15, duration = [1, 1, 2, 3, 5, 8, 13, 21, 34, 
 
 ### MP4-specific Arguments
 
-You can reduce MP4 file size with the `quality` argument. Default is max quality (and thus max file size).
+You can reduce MP4 file size with the `quality` argument. Range from 0 to 10, 10 being default and best quality.
 
 ```py
 import aul
