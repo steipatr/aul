@@ -28,6 +28,11 @@ The two main functions in the package are `export_gif(...)` and `export_mp4(...)
 Two parameters are required: the NetLogo model name (must be in same folder as Python file), and the ticks to be exported. The generated file will be saved to
 the same folder as the model.
 
+### Terminology
+
+The terms *tick* and *frame* may be confusing. I use the term *tick* to refer to a single iteration step in the NetLogo model. Ticks are unique and sequentially numbered.
+*Frames* are individual images inside a GIF or MP4 (both of which are series of images). You can specify which ticks become frames with the `ticks` argument.
+
 ### Basics
 
 Export first 30 ticks of NetLogo run to GIF...
@@ -50,7 +55,7 @@ aul.export_mp4('Fire.nlogo', 30)
 
 ### Ticks
 
-You can specify ticks in four ways - as an integer (see above), as a two- or three-element list of Python `range()` parameters, or as an explicit list of ticks:
+You can specify ticks (see Terminology) in four ways - as an integer (see Basics), as a two- or three-element list of Python `range()` parameters, or as an explicit list of ticks:
 
 ```py
 import aul
