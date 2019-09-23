@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="aul",
-    version="0.1.1",
+    version="0.1.2",
     author="Patrick Steinmann",
     author_email="patrick.steinmann@wur.nl",
     description="A package to export NetLogo model runs in GIF or MP4 formats",
